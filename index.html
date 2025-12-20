@@ -385,6 +385,27 @@
           font-size: 2.8rem;
         }
       }
+       /* 作者信息样式 - 添加到你的CSS中 */
+      .ac {
+        margin-top: 2rem;
+        width: 100%;
+        text-align: right;
+        color: rgba(255, 215, 0, 0.7);
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        font-style: italic;
+        position: relative;
+      }
+
+      .ac::before {
+        content: "—— ";
+        margin-right: 0.5rem;
+      }
+
+      /* 为.container添加底部内边距，给作者信息留空间 */
+      .container {
+        padding-bottom: 1.5rem;
+      }
     </style>
   </head>
   <body>
@@ -440,6 +461,7 @@
       <div class="blessing">
         金马送福，万象更新。愿您在新的一年里，事业如马奔腾，家庭幸福美满，健康常伴左右，好运连连不断！
       </div>
+      <div class="ac">作者：lzm</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
