@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026农历新年倒计时</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          #0a0a2a 0%,
+          #1a0033 50%,
+          #330000 100%
+        );
+        color: #fff;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* 粒子背景 */
+      #particles-js {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+
+      .container {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+      }
+
+      /* 标题样式 */
+      .header {
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      .header h1 {
+        font-size: 4.5rem;
+        background: linear-gradient(to right, #ffd700, #ff8c00, #ff4500);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        letter-spacing: 2px;
+        position: relative;
+        animation: glow 3s infinite alternate;
+      }
+
+      @keyframes glow {
+        0% {
+          text-shadow: 0 0 10px rgba(255, 215, 0, 0.5),
+            0 0 20px rgba(255, 140, 0, 0.3);
+        }
+        100% {
+          text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+            0 0 40px rgba(255, 140, 0, 0.5);
+        }
+      }
+
+      .subtitle {
+        font-size: 1.8rem;
+        color: #ffd700;
+        margin-bottom: 0.5rem;
+      }
+
+      .year-info {
+        font-size: 1.3rem;
+        color: #ffa500;
+        margin-top: 1rem;
+        padding: 0.5rem 1.5rem;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 50px;
+        display: inline-block;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+      }
+
+      /* 倒计时样式 */
+      .countdown-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin: 3rem 0;
+        perspective: 1000px;
+      }
+
+      .countdown-box {
+        background: rgba(10, 10, 40, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem 1rem;
+        min-width: 140px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        backdrop-filter: blur(10px);
+        transform-style: preserve-3d;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .countdown-box:hover {
+        transform: translateY(-10px) rotateX(5deg);
+        box-shadow: 0 20px 35px rgba(255, 215, 0, 0.3);
+        border-color: rgba(255, 215, 0, 0.5);
+      }
+
+      .countdown-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(to right, #ffd700, #ff8c00);
+      }
+
+      .countdown-value {
+        font-size: 4.5rem;
+        font-weight: 700;
+        background: linear-gradient(to bottom, #ffd700, #ff8c00);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+      }
+
+      .countdown-label {
+        font-size: 1.2rem;
+        color: #ffa500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* 农历信息 */
+      .lunar-info {
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 2rem auto;
+        max-width: 800px;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .lunar-info::before {
+        content: "❖";
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        color: rgba(255, 215, 0, 0.3);
+        font-size: 1.5rem;
+      }
+
+      .lunar-info::after {
+        content: "❖";
+        position: absolute;
+        bottom: 10px;
+        right: 15px;
+        color: rgba(255, 215, 0, 0.3);
+        font-size: 1.5rem;
+      }
+
+      .lunar-title {
+        font-size: 1.8rem;
+        color: #ffd700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .lunar-date {
+        font-size: 2.5rem;
+        color: #ffa500;
+        margin: 1rem 0;
+      }
+
+      .zodiac {
+        font-size: 1.5rem;
+        color: #ffd700;
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      /* 灯笼装饰 */
+      .lantern {
+        position: absolute;
+        width: 60px;
+        height: 80px;
+        background: linear-gradient(to bottom, #ff0000, #cc0000);
+        border-radius: 30px 30px 15px 15px;
+        z-index: 3;
+        animation: swing 5s infinite alternate ease-in-out;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+      }
+
+      .lantern::before {
+        content: "";
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 15px;
+        background: #ffd700;
+        border-radius: 5px 5px 0 0;
+      }
+
+      .lantern::after {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 20px;
+        background: #ffd700;
+      }
+
+      .lantern.left {
+        top: 15%;
+        left: 10%;
+      }
+
+      .lantern.right {
+        top: 15%;
+        right: 10%;
+      }
+
+      @keyframes swing {
+        0% {
+          transform: translateY(0) rotate(-5deg);
+        }
+        100% {
+          transform: translateY(20px) rotate(5deg);
+        }
+      }
+
+      /* 龙形装饰 */
+      .dragon {
+        position: absolute;
+        bottom: 5%;
+        right: 5%;
+        font-size: 5rem;
+        color: #ffd700;
+        opacity: 0.2;
+        z-index: 1;
+        animation: float 8s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(5deg);
+        }
+      }
+
+      /* 烟花效果 */
+      .firework {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #ffd700;
+        z-index: 1;
+      }
+
+      /* 祝福语 */
+      .blessing {
+        font-size: 1.5rem;
+        color: #ffd700;
+        margin-top: 3rem;
+        padding: 1.5rem;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 15px;
+        max-width: 800px;
+        line-height: 1.6;
+        position: relative;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+      }
+
+      .blessing::before,
+      .blessing::after {
+        content: "“";
+        font-size: 3rem;
+        color: rgba(255, 215, 0, 0.5);
+        position: absolute;
+      }
+
+      .blessing::before {
+        top: 10px;
+        left: 15px;
+      }
+
+      .blessing::after {
+        bottom: 10px;
+        right: 15px;
+        transform: rotate(180deg);
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 3rem;
+        }
+
+        .countdown-box {
+          min-width: 100px;
+          padding: 1rem 0.5rem;
+        }
+
+        .countdown-value {
+          font-size: 3.5rem;
+        }
+
+        .lunar-date {
+          font-size: 2rem;
+        }
+
+        .lantern.left,
+        .lantern.right {
+          width: 40px;
+          height: 60px;
+        }
+
+        .lantern.left {
+          left: 5%;
+        }
+
+        .lantern.right {
+          right: 5%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 2.5rem;
+        }
+
+        .countdown-container {
+          gap: 1rem;
+        }
+
+        .countdown-box {
+          min-width: 80px;
+        }
+
+        .countdown-value {
+          font-size: 2.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 灯笼装饰 -->
+    <div class="lantern left"></div>
+    <div class="lantern right"></div>
+
+    <!-- 龙形装饰 -->
+    <div class="dragon">🐉</div>
+
+    <div class="container">
+      <div class="header">
+        <h1><i class="fas fa-calendar-alt"></i> 2026农历新年倒计时</h1>
+        <div class="subtitle">距离丙午年（马年）春节还有</div>
+        <div class="year-info">2026年春节：公历2026年2月17日 星期二</div>
+      </div>
+
+      <!-- 倒计时 -->
+      <div class="countdown-container">
+        <div class="countdown-box">
+          <div class="countdown-value" id="days">00</div>
+          <div class="countdown-label">天</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-value" id="hours">00</div>
+          <div class="countdown-label">小时</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-value" id="minutes">00</div>
+          <div class="countdown-label">分钟</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-value" id="seconds">00</div>
+          <div class="countdown-label">秒</div>
+        </div>
+      </div>
+
+      <!-- 农历信息 -->
+      <div class="lunar-info">
+        <div class="lunar-title"><i class="fas fa-moon"></i> 农历日期信息</div>
+        <div class="lunar-date" id="lunar-date">丙午年 正月初一</div>
+        <div class="zodiac"><i class="fas fa-horse"></i> 生肖：马年</div>
+        <div
+          id="current-date"
+          style="color: #ffa500; font-size: 1.2rem; margin-top: 1rem"
+        ></div>
+      </div>
+
+      <!-- 祝福语 -->
+      <div class="blessing">
+        金马送福，万象更新。愿您在新的一年里，事业如马奔腾，家庭幸福美满，健康常伴左右，好运连连不断！
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+      // 粒子背景配置
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: ["#FFD700", "#FF8C00", "#FF4500"] },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#FFD700",
+            opacity: 0.2,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 2,
+            direction: "none",
+            random: true,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" },
+          },
+        },
+      });
+
+      // 2026年农历新年日期（春节）：2026年2月17日
+      const newYearDate = new Date("February 17, 2026 00:00:00").getTime();
+
+      // 农历信息
+      const lunarInfo = {
+        year: "丙午",
+        month: "正月",
+        day: "初一",
+        zodiac: "马",
+        yearName: "丙午年（马年）",
+      };
+
+      // 更新倒计时
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const timeLeft = newYearDate - now;
+
+        // 计算天、时、分、秒
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        // 更新显示
+        document.getElementById("days").textContent = days
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("hours").textContent = hours
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("minutes").textContent = minutes
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("seconds").textContent = seconds
+          .toString()
+          .padStart(2, "0");
+
+        // 更新农历日期
+        document.getElementById(
+          "lunar-date"
+        ).textContent = `${lunarInfo.year}年 ${lunarInfo.month}${lunarInfo.day}`;
+
+        // 更新当前日期
+        const currentDate = new Date();
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          weekday: "long",
+        };
+        document.getElementById(
+          "current-date"
+        ).textContent = `当前时间：${currentDate.toLocaleDateString(
+          "zh-CN",
+          options
+        )} ${currentDate.toLocaleTimeString("zh-CN")}`;
+
+        // 如果时间到了，显示庆祝消息
+        if (timeLeft < 0) {
+          clearInterval(countdownInterval);
+          document.querySelector(".countdown-container").innerHTML =
+            '<div style="font-size: 3rem; color: #FFD700;">🎉 新年快乐！ 🎉</div>';
+        }
+
+        // 随机生成烟花效果
+        if (Math.random() > 0.97) {
+          createFirework();
+        }
+      }
+
+      // 创建烟花效果
+      function createFirework() {
+        const firework = document.createElement("div");
+        firework.className = "firework";
+        firework.style.left = `${Math.random() * 100}%`;
+        firework.style.top = `${Math.random() * 100}%`;
+        firework.style.backgroundColor = `hsl(${
+          Math.random() * 60
+        }, 100%, 50%)`;
+        document.body.appendChild(firework);
+
+        // 烟花动画
+        let size = 5;
+        const grow = setInterval(() => {
+          size += 2;
+          firework.style.width = `${size}px`;
+          firework.style.height = `${size}px`;
+          firework.style.opacity = 1 - size / 50;
+
+          if (size > 50) {
+            clearInterval(grow);
+            firework.remove();
+          }
+        }, 30);
+      }
+
+      // 初始调用
+      updateCountdown();
+
+      // 每秒更新一次
+      const countdownInterval = setInterval(updateCountdown, 1000);
+
+      // 灯笼点击效果
+      document.querySelectorAll(".lantern").forEach((lantern) => {
+        lantern.addEventListener("click", function () {
+          this.style.animation = "none";
+          this.style.boxShadow = "0 0 40px rgba(255, 0, 0, 1)";
+          setTimeout(() => {
+            this.style.animation = "swing 5s infinite alternate ease-in-out";
+            this.style.boxShadow = "0 0 20px rgba(255, 0, 0, 0.7)";
+          }, 500);
+
+          // 创建多个小烟花
+          for (let i = 0; i < 8; i++) {
+            setTimeout(() => createFirework(), i * 100);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
